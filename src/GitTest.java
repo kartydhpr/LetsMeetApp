@@ -6,8 +6,8 @@ public class GitTest {
         System.out.println("    Pushing change to repo - Karty");
         // Jack
         System.out.println("Jack:");
-        System.out.println("    ");
-        System.out.println("    ");
+        System.out.println("    Cloned file from repo - Jack");
+        System.out.println("    Pushing change to repo - Jack");
         // Ryan
         System.out.println("Ryan:");
         System.out.println("    ");
