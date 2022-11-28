@@ -1,5 +1,5 @@
 /*
-
+This is the Client class.
 */
 
 import java.io.*;

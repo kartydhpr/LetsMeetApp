@@ -1,5 +1,5 @@
 /*
-
+This is the Message class.
 */
 
 public class Message {

@@ -1,5 +1,5 @@
 /*
-
+This is the Time class.
 */
 
 import java.io.*;

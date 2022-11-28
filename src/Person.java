@@ -1,5 +1,5 @@
 /*
-
+This is the Person class.
 */
 
 public class Person {
