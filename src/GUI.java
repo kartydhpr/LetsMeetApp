@@ -1,5 +1,5 @@
 /*
-This is the Gui class.
+This is the Gui class
 */
 
 import java.awt.*;
@@ -9,60 +9,84 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class Gui extends JFrame implements ActionListener, KeyListener, MouseListener{
-    Message m = new Message();
+public class GUI extends JFrame implements ActionListener, KeyListener, MouseListener{
+//    Message m = new Message();
+    API api = new API();
     
     JFrame frame;
-    JPanel calendarPanel, messagePanel, mapPanel;
+    JPanel calendarMessagePanel, mapPanel, zoomPanel;
     JTabbedPane tabbedPane;
-    JMenuBar menuBar;
-    JMenu fileMenu;
-    JMenuItem clearMessageMenuItem;
-    JButton a;
+    JButton getDirectionButton, zoomLinkButton, findRoute;
+    JTextField getDirectionTextBox, zoomLinkTextBox, startDestinationTextBox, endDestinationTextBox;
+    JLabel destinationStartLabel, destinationEndLabel, tempZoolPanelLabel;
+    
 
-    public Gui(){
+    public GUI(){
         frame = new JFrame();   
-        calendarPanel = new JPanel();  
-        messagePanel = new JPanel();  
+        calendarMessagePanel = new JPanel();    
         mapPanel = new JPanel();
         tabbedPane = new JTabbedPane();  
-        menuBar = new JMenuBar();
-        setJMenuBar(menuBar);
 
-        fileMenu = new JMenu("hi");
-        clearMessageMenuItem = new JMenuItem("yo");
-        clearMessageMenuItem.addActionListener(this);
-        menuBar.add(fileMenu);
-        fileMenu.add(clearMessageMenuItem);
+        calendarMessagePanel = new JPanel();
+        getDirectionTextBox = new JTextField(15);
+        getDirectionTextBox.addActionListener(this);
+        getDirectionButton = new JButton("Get Directions");
+        getDirectionButton.addActionListener(this);
+        zoomLinkTextBox = new JTextField(15);
+        zoomLinkTextBox.addActionListener(this);
+        zoomLinkButton = new JButton("Get Zoom Link");
+        zoomLinkButton.addActionListener(this);
+        calendarMessagePanel.add(getDirectionTextBox);
+        calendarMessagePanel.add(getDirectionButton);
+        calendarMessagePanel.add(zoomLinkTextBox);
+        calendarMessagePanel.add(zoomLinkButton);
         
-        a = new JButton("Hi");
-        a.addActionListener(this);
-
-        calendarPanel = new JPanel();
-        calendarPanel.add(a);
-
-
-        messagePanel = new JPanel();
-
-
         mapPanel = new JPanel();
-
-
-
-        tabbedPane.add("Calendar", calendarPanel);  
-        tabbedPane.add("Message", messagePanel);  
+        destinationStartLabel = new JLabel("Start Point");
+        startDestinationTextBox = new JTextField(15);
+        startDestinationTextBox.addActionListener(this);
+        destinationEndLabel = new JLabel("End Point");
+        endDestinationTextBox = new JTextField(15);
+        endDestinationTextBox.addActionListener(this);
+        findRoute = new JButton("Find Route");
+        findRoute.addActionListener(this);
+        mapPanel.add(destinationStartLabel);
+        mapPanel.add(startDestinationTextBox);
+        mapPanel.add(destinationEndLabel);
+        mapPanel.add(endDestinationTextBox);
+        mapPanel.add(findRoute);
+        mapPanel.add(api.startApi(System.getProperty("user.dir") + "/src/map.html"), BorderLayout.CENTER);
+        
+        zoomPanel = new JPanel();
+        tempZoolPanelLabel = new JLabel("Please enter the Zoom link in the calendar tab.");
+        zoomPanel.add(tempZoolPanelLabel);
+   
+        tabbedPane.add("Calendar", calendarMessagePanel);  
         tabbedPane.add("Map", mapPanel);
+        tabbedPane.add("Zoom", zoomPanel);
 
-        frame.add(menuBar);
         frame.add(tabbedPane);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        frame.setSize(700,700);
+        frame.setSize(900, 775);
         frame.setLocationRelativeTo(null);
-        frame.setVisible(true); 
+        frame.setVisible(true);
     }
     
     public void actionPerformed(ActionEvent evt){
+        if(evt.getSource() == getDirectionButton){
+            endDestinationTextBox.setText(getDirectionTextBox.getText());
+            tabbedPane.setSelectedIndex(1);
+        }
         
+        if(evt.getSource() == zoomLinkButton){
+            zoomPanel.add(api.startApi(zoomLinkTextBox.getText()), BorderLayout.CENTER);
+            tempZoolPanelLabel.setText("");
+            tabbedPane.setSelectedIndex(2);
+        }
+        
+        if(evt.getSource() == findRoute){
+            
+        }
     }
     
     //Key listeners
@@ -124,7 +148,7 @@ public class Gui extends JFrame implements ActionListener, KeyListener, MouseLis
                         }
                         
                         else{
-                            m.setMessage(lineIn);
+//                            m.setMessage(lineIn);
                             // conversationBox.append(t.getTime() + " | " + c.getReceiver().getUsername() + ": " + m.getMessage() + "\n");
                         }
                     } 
@@ -143,7 +167,7 @@ public class Gui extends JFrame implements ActionListener, KeyListener, MouseLis
      
     //Main method
     public static void main(String [] args){
-        Gui g = new Gui();
+        GUI g = new GUI();
         //g.receiveMessage(8189); 
     }
 }
