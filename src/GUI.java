@@ -5,31 +5,51 @@ This is the Gui class
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-import java.io.*;
-import java.net.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Timer;
 
 public class GUI extends JFrame implements ActionListener, KeyListener, MouseListener{
 //    Message m = new Message();
     API api = new API();
-    
+    Color bgColor = new Color(0,40,69);
+    Color secondaryColor = new Color(255,153,115);
+    Color panelColor = new Color(32,61,84);
+    Color accentColor = new Color(0,207,204);
     JFrame frame;
     JPanel calendarPanel, chatroomPanel, mapPanel, zoomPanel;
     JTabbedPane tabbedPane;
 //    JButton ;
 //    JTextField ;
-//    JLabel ;
+    JLabel clockLbl;
 
     public GUI(){
         //General page specsa
         frame = new JFrame();   
         tabbedPane = new JTabbedPane();
+        tabbedPane.setForeground(secondaryColor);
+        tabbedPane.setBackground(Color.white);
 
         //Calendar panel specs
         calendarPanel = new JPanel();
+        clockLbl = new JLabel("");
+        clockLbl.setFont(clockLbl.getFont().deriveFont(50f));
+        clockLbl.setForeground(secondaryColor);
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                String string = new SimpleDateFormat("hh:mm aa").format(new Date());
+                clockLbl.setText(string);
+            }
+        }, 0, 1000);
+        calendarPanel.add(clockLbl);
+        calendarPanel.setBackground(panelColor);
 
         // Chatroom panel specs
         chatroomPanel = new JPanel();
+        chatroomPanel.setBackground(panelColor);
 
         // Map panel specs
         mapPanel = new JPanel();
@@ -38,6 +58,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         // Zoom panel specs
         zoomPanel = new JPanel();
         zoomPanel.add(api.startApi("zoom.com/join"), BorderLayout.CENTER);
+        zoomPanel.setBackground(Color.white);
 
         //tabbed pane at the top of the screen
         tabbedPane.add("Calendar", calendarPanel);
@@ -45,12 +66,14 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         tabbedPane.add("Map", mapPanel);
         tabbedPane.add("Zoom", zoomPanel);
 
-        frame.add(tabbedPane);
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame.setTitle("LetsMeetApp");
+        frame.getContentPane().setBackground(bgColor);
         frame.setSize(900, 700);
         frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
         frame.setResizable(false);
+        frame.add(tabbedPane);
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
     
     public void actionPerformed(ActionEvent evt){
@@ -89,48 +112,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
     public void mouseClicked(MouseEvent e) {
        
-    }
-    
-    //Server to receive the messages
-    public void receiveMessage(int port){               
-        System.out.println("Server Starting...");
-        String lineIn;
-        
-        try{
-            ServerSocket s = new ServerSocket(port); 
-            boolean over = false;   
-
-            while(!over){ 
-                Socket incoming = s.accept(); 
-
-                try{
-                    InputStream inStream = incoming.getInputStream();  
-                    Scanner in = new Scanner(inStream); 
-
-                    boolean done = false;
-                    while (!done && in.hasNextLine()){ 
-                        lineIn = in.nextLine();
-
-                        if (lineIn.trim().equals("END")){
-                            done = true;
-                        }
-                        
-                        else{
-//                            m.setMessage(lineIn);
-                            // conversationBox.append(t.getTime() + " | " + c.getReceiver().getUsername() + ": " + m.getMessage() + "\n");
-                        }
-                    } 
-                }
-
-                catch(Exception exc1){
-                    exc1.printStackTrace();
-                } 
-            }
-        }
-        
-        catch(Exception exc2){
-            exc2.printStackTrace();
-        }  
     }
      
     //Main method
