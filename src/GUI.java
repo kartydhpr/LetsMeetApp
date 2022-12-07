@@ -4,13 +4,20 @@ This is the Gui class
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Timer;
 
 public class GUI extends JFrame implements ActionListener, KeyListener, MouseListener{
-//    Message m = new Message();
+
+    Person sender;
+    Person receiver;
+    Message m = new Message();
+    String currentMessage;
+
     API api = new API();
     Color bgColor = new Color(0,40,69);
     Color secondaryColor = new Color(255,153,115);
@@ -24,7 +31,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
     JLabel clockLbl;
 
     public GUI(){
-        //General page specsa
+        //General page specs
         frame = new JFrame();   
         tabbedPane = new JTabbedPane();
         tabbedPane.setForeground(secondaryColor);
@@ -35,7 +42,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         clockLbl = new JLabel("");
         clockLbl.setFont(clockLbl.getFont().deriveFont(50f));
         clockLbl.setForeground(secondaryColor);
-
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -50,6 +56,63 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         // Chatroom panel specs
         chatroomPanel = new JPanel();
         chatroomPanel.setBackground(panelColor);
+
+        Person karty = new Person("Karty", "1", "10.186.173.143", 8189);
+        Person jack = new Person("Jack", "2", "10.186.173.143", 8180);
+
+        // Frame Variables
+        JPanel pnlContain;
+        JTextField txtPort;
+        JTextArea txtHistory, txtMessage;
+        JLabel lblHistory, lblMessage;
+        JComboBox comboReceiver;
+        JButton btnSendMessage;
+
+        LineBorder lineBorder = new LineBorder(secondaryColor , 3, true);
+        LineBorder lineBorderMessaActive = new LineBorder(Color.green , 3, true);
+
+        String[] receiverList = {"Pick Recipient", "Jack", "Karty"}; // combo box list population
+        String[] senderList = {"Pick Sender", "Jack", "Karty"}; // combo box list population
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
+
+            // Main frame
+            comboReceiver = new JComboBox(receiverList);
+            comboReceiver.addActionListener(this);
+
+            lblHistory = new JLabel(" _______________ Chat History: _______________ ");
+            lblHistory.setForeground(Color.white);
+            txtHistory = new JTextArea(30,30);
+            txtHistory.setEditable(false);
+            txtHistory.setLineWrap(true);
+            txtHistory.setBackground(Color.black);
+            txtHistory.setForeground(Color.green);
+            txtHistory.setBorder(lineBorder);
+
+            lblMessage = new JLabel("Message:");
+            lblMessage.setForeground(Color.white);
+            txtMessage = new JTextArea(3,30);
+            txtMessage.setLineWrap(true);
+            txtMessage.setBackground(Color.black);
+            txtMessage.setForeground(Color.white);
+            txtMessage.setBorder(lineBorder);
+
+            btnSendMessage = new JButton("Send");
+            btnSendMessage.addActionListener(this);
+
+            Container cp = getContentPane();
+            pnlContain = new JPanel();
+            pnlContain.add(comboReceiver);
+            pnlContain.add(lblHistory);
+            pnlContain.add(txtHistory);
+            pnlContain.add(lblMessage);
+            pnlContain.add(txtMessage);
+            pnlContain.add(btnSendMessage);
+            pnlContain.setBackground(bgColor);
+            cp.add(pnlContain);
+            chatroomPanel.add(cp);
+            chatroomPanel.setSize(123,123);
+
 
         // Map panel specs
         mapPanel = new JPanel();
@@ -70,7 +133,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         frame.getContentPane().setBackground(bgColor);
         frame.setSize(900, 700);
         frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
+        frame.setResizable(true);
         frame.add(tabbedPane);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -117,6 +180,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
     //Main method
     public static void main(String [] args){
         GUI g = new GUI();
-        //g.receiveMessage(8189); 
+        //g.receiveMessage(8189);
     }
 }
