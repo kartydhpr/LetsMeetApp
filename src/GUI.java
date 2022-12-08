@@ -4,21 +4,15 @@ This is the Gui class
 
 import java.awt.*;
 import java.awt.Color;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.event.*;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Timer;
 import com.mindfusion.common.DateTime;
 import com.mindfusion.common.Duration;
-import com.mindfusion.drawing.awt.AwtImage;
 import com.mindfusion.scheduling.*;
 import com.mindfusion.scheduling.awt.AwtCalendar;
 import com.mindfusion.scheduling.model.*;
@@ -46,7 +40,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
     JCheckBox undergraduateBox;
     JCheckBox graduateBox;
     JCheckBox phdBox;
-    Choice teachers;
+    Choice people;
     AwtCalendar calendar;
     ArrayList<Contact> contactsList;
 
@@ -80,8 +74,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         SpringLayout springLayout = new SpringLayout();
         calendarPanel.setLayout(springLayout);
 
-        teachers = new Choice();
-        calendarPanel.add(teachers);
+        people = new Choice();
+        calendarPanel.add(people);
 
         undergraduateBox = new JCheckBox("Undergraduate");
         undergraduateBox.setSelected(true);
@@ -161,8 +155,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         springLayout.putConstraint(SpringLayout.WEST, calendar, 0, SpringLayout.WEST, calendarPanel);
         springLayout.putConstraint(SpringLayout.SOUTH, calendar, -35, SpringLayout.NORTH, undergraduateBox);
 
-        springLayout.putConstraint(SpringLayout.WEST, teachers, 5, SpringLayout.EAST, label);
-        springLayout.putConstraint(SpringLayout.SOUTH, teachers, -5, SpringLayout.NORTH, undergraduateBox);
+        springLayout.putConstraint(SpringLayout.WEST, people, 5, SpringLayout.EAST, label);
+        springLayout.putConstraint(SpringLayout.SOUTH, people, -5, SpringLayout.NORTH, undergraduateBox);
 
         springLayout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, calendarPanel);
         springLayout.putConstraint(SpringLayout.SOUTH, label, -5, SpringLayout.NORTH, undergraduateBox);
@@ -172,9 +166,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
         calendar.setEnableDragCreate(true);
         calendar.addCalendarListener(new CalendarAdapter() {
-            public void draw (DrawEvent e){
-                onCalendarDraw(e);
-            }
+//            public void draw (DrawEvent e){
+//                onCalendarDraw(e);
+//            }
 
             public void itemCreated (ItemEvent e){
                 onItemCreated(e);
@@ -192,6 +186,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
         // Chatroom panel specs
         chatroomPanel = new JPanel();
+        chatroomPanel.setLayout(new BoxLayout(chatroomPanel, BoxLayout.Y_AXIS));
         chatroomPanel.setBackground(panelColor);
 
         Person karty = new Person("Karty", "1", "10.186.173.143", 8189);
@@ -239,6 +234,13 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
         Container cp = getContentPane();
         pnlContain = new JPanel();
+        pnlContain.setLayout(new BoxLayout(pnlContain, BoxLayout.Y_AXIS));
+        comboReceiver.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
+        lblHistory.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
+        txtHistory.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
+        lblMessage.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
+        txtMessage.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
+        btnSendMessage.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
         pnlContain.add(comboReceiver);
         pnlContain.add(lblHistory);
         pnlContain.add(txtHistory);
@@ -294,10 +296,10 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
                     if (addItems) {
                         calendar.getContacts().add(c);
-                        teachers.add(c.getName());
+                        people.add(c.getName());
                     } else {
                         calendar.getContacts().remove(c);
-                        teachers.remove(c.getName());
+                        people.remove(c.getName());
                     }
                 }
             }
@@ -307,10 +309,10 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
                     if (addItems) {
                         calendar.getContacts().add(c);
-                        teachers.add(c.getName());
+                        people.add(c.getName());
                     } else {
                         calendar.getContacts().remove(c);
-                        teachers.remove(c.getName());
+                        people.remove(c.getName());
                     }
                 }
             }
@@ -320,10 +322,10 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
                     if (addItems) {
                         calendar.getContacts().add(c);
-                        teachers.add(c.getName());
+                        people.add(c.getName());
                     } else {
                         calendar.getContacts().remove(c);
-                        teachers.remove(c.getName());
+                        people.remove(c.getName());
                     }
                 }
             }
@@ -336,7 +338,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         Contact contact = new Contact();
         contact.setId("german_MW");
         contact.setName("Michael Walmann");
-        teachers.add(contact.getName());
+        people.add(contact.getName());
         calendar.getContacts().add(contact);
         contactsList.add(contact);
 
@@ -344,150 +346,150 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         contact.setId("german_LB");
         contact.setName("Brigitte Koepf");
         calendar.getContacts().add(contact);
-        teachers.add(contact.getName());
+        people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
         contact.setId("piano_DR");
         contact.setName("David Rohnson");
         calendar.getContacts().add(contact);
-        teachers.add(contact.getName());
+        people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
         contact.setId("piano_EE");
         contact.setName("Elisabeth Evans");
         calendar.getContacts().add(contact);
-        teachers.add(contact.getName());
+        people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
         contact.setId("guitar_RS");
         contact.setName("Ricardo Smith");
         calendar.getContacts().add(contact);
-        teachers.add(contact.getName());
+        people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
         contact.setId("guitar_RW");
         contact.setName("Robert Wilson");
         calendar.getContacts().add(contact);
-        teachers.add(contact.getName());
+        people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
         contact.setId("french_FT");
         contact.setName("Francois Toreau");
         calendar.getContacts().add(contact);
-        teachers.add(contact.getName());
+        people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
         contact.setId("french_CR");
         contact.setName("Chantale Saron");
         calendar.getContacts().add(contact);
-        teachers.add(contact.getName());
+        people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
         contact.setId("piano_PD");
         contact.setName("Peter Drysdale");
         calendar.getContacts().add(contact);
-        teachers.add(contact.getName());
+        people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
         contact.setId("guitar_ER");
         contact.setName("Emma Rodriguez");
         calendar.getContacts().add(contact);
-        teachers.add(contact.getName());
+        people.add(contact.getName());
         contactsList.add(contact);
     }
 
 
-    protected void onCalendarDraw (DrawEvent e){
-        if (e.getElement() == CustomDrawElements.TimetableItem) {
-
-            Appointment app = (Appointment) e.getItem();
-
-            if (app.getContacts().size() == 0)
-                return;
-            if (app.getContacts().get(0).getId().startsWith("guitar")) {
-
-                java.awt.Image img = null;
-
-                try {
-                    // Read the image file from an input stream
-                    InputStream is = new BufferedInputStream(
-                            new FileInputStream("../guitar.png"));
-                    img = ImageIO.read(is);
-
-                    com.mindfusion.common.Rectangle r = e.getBounds();
-                    AwtImage awtImage = new AwtImage(img);
-                    //draw the image
-                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
-
-                } catch (IOException ioe) {
-                }
-            } else if (app.getContacts().get(0).getId().startsWith("piano")) {
-
-                java.awt.Image img = null;
-
-                try {
-                    // Read the image file from an input stream
-                    InputStream is = new BufferedInputStream(
-                            new FileInputStream("../piano.png"));
-                    img = ImageIO.read(is);
-
-                    com.mindfusion.common.Rectangle r = e.getBounds();
-                    AwtImage awtImage = new AwtImage(img);
-                    //draw the image
-                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
-
-                } catch (IOException ioe) {
-                }
-            } else if (app.getContacts().get(0).getId().startsWith("german")) {
-
-                java.awt.Image img = null;
-
-                try {
-                    // Read the image file from an input stream
-                    InputStream is = new BufferedInputStream(
-                            new FileInputStream("../german.png"));
-                    img = ImageIO.read(is);
-
-                    com.mindfusion.common.Rectangle r = e.getBounds();
-                    AwtImage awtImage = new AwtImage(img);
-                    //draw the
-                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
-
-                } catch (IOException ioe) {
-                }
-            } else if (app.getContacts().get(0).getId().startsWith("french")) {
-
-                java.awt.Image img = null;
-
-                try {
-                    // Read the image file from an input stream
-                    InputStream is = new BufferedInputStream(
-                            new FileInputStream("../french.png"));
-                    img = ImageIO.read(is);
-
-                    com.mindfusion.common.Rectangle r = e.getBounds();
-                    AwtImage awtImage = new AwtImage(img);
-                    //draw the image
-                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
-
-                } catch (IOException ioe) {
-                }
-            }
-        }
-    }
+//    protected void onCalendarDraw (DrawEvent e){
+//        if (e.getElement() == CustomDrawElements.TimetableItem) {
+//
+//            Appointment app = (Appointment) e.getItem();
+//
+//            if (app.getContacts().size() == 0)
+//                return;
+//            if (app.getContacts().get(0).getId().startsWith("guitar")) {
+//
+//                java.awt.Image img = null;
+//
+//                try {
+//                    // Read the image file from an input stream
+//                    InputStream is = new BufferedInputStream(
+//                            new FileInputStream("../guitar.png"));
+//                    img = ImageIO.read(is);
+//
+//                    com.mindfusion.common.Rectangle r = e.getBounds();
+//                    AwtImage awtImage = new AwtImage(img);
+//                    //draw the image
+//                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
+//
+//                } catch (IOException ioe) {
+//                }
+//            } else if (app.getContacts().get(0).getId().startsWith("piano")) {
+//
+//                java.awt.Image img = null;
+//
+//                try {
+//                    // Read the image file from an input stream
+//                    InputStream is = new BufferedInputStream(
+//                            new FileInputStream("../piano.png"));
+//                    img = ImageIO.read(is);
+//
+//                    com.mindfusion.common.Rectangle r = e.getBounds();
+//                    AwtImage awtImage = new AwtImage(img);
+//                    //draw the image
+//                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
+//
+//                } catch (IOException ioe) {
+//                }
+//            } else if (app.getContacts().get(0).getId().startsWith("german")) {
+//
+//                java.awt.Image img = null;
+//
+//                try {
+//                    // Read the image file from an input stream
+//                    InputStream is = new BufferedInputStream(
+//                            new FileInputStream("../german.png"));
+//                    img = ImageIO.read(is);
+//
+//                    com.mindfusion.common.Rectangle r = e.getBounds();
+//                    AwtImage awtImage = new AwtImage(img);
+//                    //draw the
+//                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
+//
+//                } catch (IOException ioe) {
+//                }
+//            } else if (app.getContacts().get(0).getId().startsWith("french")) {
+//
+//                java.awt.Image img = null;
+//
+//                try {
+//                    // Read the image file from an input stream
+//                    InputStream is = new BufferedInputStream(
+//                            new FileInputStream("../french.png"));
+//                    img = ImageIO.read(is);
+//
+//                    com.mindfusion.common.Rectangle r = e.getBounds();
+//                    AwtImage awtImage = new AwtImage(img);
+//                    //draw the image
+//                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
+//
+//                } catch (IOException ioe) {
+//                }
+//            }
+//        }
+//    }
 
     protected void onItemCreated (ItemEvent e){
         Appointment item = (Appointment) e.getItem();
 
-        String teacherName = teachers.getSelectedItem();
+        String teacherName = people.getSelectedItem();
         for (Contact c : calendar.getSchedule().getContacts()) {
             if (c.getName().equals(teacherName)) {
                 item.getContacts().add(calendar.getContacts().get(c.getId()));
