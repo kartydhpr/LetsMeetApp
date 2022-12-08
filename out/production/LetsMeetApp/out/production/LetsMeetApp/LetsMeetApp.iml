@@ -3,14 +3,14 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jxbrowser-7.28.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/jxbrowser-7.28.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -19,7 +19,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jxbrowser-javafx-7.28.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/jxbrowser-swt-7.28.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -28,7 +28,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jxbrowser-linux64-7.28.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/jxbrowser-swing-7.28.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -37,7 +37,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jxbrowser-swing-7.28.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/jxbrowser-linux64-7.28.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -46,16 +46,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jxbrowser-swt-7.28.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/JPlanner.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/jxbrowser-javafx-7.28.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
