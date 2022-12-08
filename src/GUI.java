@@ -43,7 +43,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
     //    JButton ;
 //    JTextField ;
     JLabel clockLbl;
-    JCheckBox guitarBox;
+    JCheckBox personalBox;
     JCheckBox frenchBox;
     JCheckBox germanBox;
     JCheckBox pianoBox;
@@ -85,16 +85,16 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         teachers = new Choice();
         calendarPanel.add(teachers);
 
-        guitarBox = new JCheckBox("Guitar");
-        guitarBox.setSelected(true);
+        personalBox = new JCheckBox("Personal");
+        personalBox.setSelected(true);
 
-        guitarBox.addItemListener(new ItemListener() {
+        personalBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent e) {
                 checkBoxChanged(e);
             }
         });
-        calendarPanel.add(guitarBox);
+        calendarPanel.add(personalBox);
 
         pianoBox = new JCheckBox("Piano");
 
@@ -132,7 +132,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         calendarPanel.add(frenchBox);
 
         springLayout.putConstraint(SpringLayout.SOUTH, frenchBox, -5, SpringLayout.SOUTH, calendarPanel);
-        springLayout.putConstraint(SpringLayout.WEST, frenchBox, 5, SpringLayout.EAST, guitarBox);
+        springLayout.putConstraint(SpringLayout.WEST, frenchBox, 5, SpringLayout.EAST, personalBox);
 
         springLayout.putConstraint(SpringLayout.SOUTH, pianoBox, -5, SpringLayout.SOUTH, calendarPanel);
         springLayout.putConstraint(SpringLayout.WEST, pianoBox, 5, SpringLayout.EAST, frenchBox);
@@ -174,16 +174,16 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         springLayout.putConstraint(SpringLayout.EAST, calendar, 0, SpringLayout.EAST, calendarPanel);
         springLayout.putConstraint(SpringLayout.NORTH, calendar, 0, SpringLayout.NORTH, calendarPanel);
         springLayout.putConstraint(SpringLayout.WEST, calendar, 0, SpringLayout.WEST, calendarPanel);
-        springLayout.putConstraint(SpringLayout.SOUTH, calendar, -35, SpringLayout.NORTH, guitarBox);
+        springLayout.putConstraint(SpringLayout.SOUTH, calendar, -35, SpringLayout.NORTH, personalBox);
 
         springLayout.putConstraint(SpringLayout.WEST, teachers, 5, SpringLayout.EAST, label);
-        springLayout.putConstraint(SpringLayout.SOUTH, teachers, -5, SpringLayout.NORTH, guitarBox);
+        springLayout.putConstraint(SpringLayout.SOUTH, teachers, -5, SpringLayout.NORTH, personalBox);
 
         springLayout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, calendarPanel);
-        springLayout.putConstraint(SpringLayout.SOUTH, label, -5, SpringLayout.NORTH, guitarBox);
+        springLayout.putConstraint(SpringLayout.SOUTH, label, -5, SpringLayout.NORTH, personalBox);
 
-        springLayout.putConstraint(SpringLayout.SOUTH, guitarBox, -5, SpringLayout.SOUTH, calendarPanel);
-        springLayout.putConstraint(SpringLayout.WEST, guitarBox, 5, SpringLayout.WEST, calendarPanel);
+        springLayout.putConstraint(SpringLayout.SOUTH, personalBox, -5, SpringLayout.SOUTH, calendarPanel);
+        springLayout.putConstraint(SpringLayout.WEST, personalBox, 5, SpringLayout.WEST, calendarPanel);
 
         calendar.setEnableDragCreate(true);
         calendar.addCalendarListener(new CalendarAdapter() {
@@ -302,7 +302,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
         Object source = e.getItemSelectable();
 
-        if (source == guitarBox) {
+        if (source == personalBox) {
 
             for (Contact c : contactsList) {
                 if (c.getId().startsWith("guitar")) {
