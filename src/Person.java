@@ -3,32 +3,32 @@ This is the Person class.
 */
 
 public class Person {
-    private String username;
-    private String id;
-    private String ip;
-    private int port;
+    protected String firstname;
+    protected String lastname;
+    protected String ip;
+    protected int port;
     
-    public Person(String username, String id, String ip, int port){
-        this.username = username;
-        this.id = id;
+    public Person(String firstname, String lastname, String ip, int port){
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.ip = ip;
         this.port = port;
     }
     
-    public void setUsername(String username){
-        this.username = username;
+    public void setFirstname(String firstname){
+        this.firstname = firstname;
     }
     
-    public String getUsername(){
-        return username;
+    public String getFirstname(){
+        return firstname;
     }
     
-    public void setId(String id){
-        this.id = id;
+    public void setLastname(String lastname){
+        this.lastname = lastname;
     }
     
-    public String getId(){
-        return id;
+    public String getLastname(){
+        return lastname;
     }
     
     public void setIp(String ip){
