@@ -43,10 +43,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
     //    JButton ;
 //    JTextField ;
     JLabel clockLbl;
-    JCheckBox personalBox;
-    JCheckBox frenchBox;
-    JCheckBox germanBox;
-    JCheckBox pianoBox;
+    JCheckBox undergraduateBox;
+    JCheckBox graduateBox;
+    JCheckBox phdBox;
     Choice teachers;
     AwtCalendar calendar;
     ArrayList<Contact> contactsList;
@@ -62,7 +61,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         SpringLayout layout = new SpringLayout();
         calendarPanel = new JPanel();
         clockLbl = new JLabel("");
-        clockLbl.setFont(clockLbl.getFont().deriveFont(18f));
+        clockLbl.setFont(clockLbl.getFont().deriveFont(16f));
         clockLbl.setForeground(secondaryColor);
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -72,7 +71,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
                 clockLbl.setText(string);
             }
         }, 0, 1000);
-
 
 
         layout.putConstraint(SpringLayout.NORTH, clockLbl,50, SpringLayout.SOUTH, calendarPanel);
@@ -85,60 +83,47 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         teachers = new Choice();
         calendarPanel.add(teachers);
 
-        personalBox = new JCheckBox("Personal");
-        personalBox.setSelected(true);
+        undergraduateBox = new JCheckBox("Undergraduate");
+        undergraduateBox.setSelected(true);
 
-        personalBox.addItemListener(new ItemListener() {
+        undergraduateBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent e) {
                 checkBoxChanged(e);
             }
         });
-        calendarPanel.add(personalBox);
+        calendarPanel.add(undergraduateBox);
 
-        pianoBox = new JCheckBox("Piano");
+        phdBox = new JCheckBox("PHD");
 
-        pianoBox.setSelected(true);
-        pianoBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(java.awt.event.ItemEvent e) {
-                checkBoxChanged(e);
-            }
-        });
-
-        calendarPanel.add(pianoBox);
-
-        germanBox = new JCheckBox("German");
-        germanBox.setSelected(true);
-        germanBox.addItemListener(new ItemListener() {
+        phdBox.setSelected(true);
+        phdBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent e) {
                 checkBoxChanged(e);
             }
         });
 
-        calendarPanel.add(germanBox);
+        calendarPanel.add(phdBox);
 
-        frenchBox = new JCheckBox("French");
+        graduateBox = new JCheckBox("Graduate");
 
-        frenchBox.setSelected(true);
-        frenchBox.addItemListener(new ItemListener() {
+        graduateBox.setSelected(true);
+        graduateBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent e) {
                 checkBoxChanged(e);
             }
         });
 
-        calendarPanel.add(frenchBox);
+        calendarPanel.add(graduateBox);
 
-        springLayout.putConstraint(SpringLayout.SOUTH, frenchBox, -5, SpringLayout.SOUTH, calendarPanel);
-        springLayout.putConstraint(SpringLayout.WEST, frenchBox, 5, SpringLayout.EAST, personalBox);
+        springLayout.putConstraint(SpringLayout.SOUTH, graduateBox, -5, SpringLayout.SOUTH, calendarPanel);
+        springLayout.putConstraint(SpringLayout.WEST, graduateBox, 5, SpringLayout.EAST, undergraduateBox);
 
-        springLayout.putConstraint(SpringLayout.SOUTH, pianoBox, -5, SpringLayout.SOUTH, calendarPanel);
-        springLayout.putConstraint(SpringLayout.WEST, pianoBox, 5, SpringLayout.EAST, frenchBox);
+        springLayout.putConstraint(SpringLayout.SOUTH, phdBox, -5, SpringLayout.SOUTH, calendarPanel);
+        springLayout.putConstraint(SpringLayout.WEST, phdBox, 5, SpringLayout.EAST, graduateBox);
 
-        springLayout.putConstraint(SpringLayout.SOUTH, germanBox, -5, SpringLayout.SOUTH, calendarPanel);
-        springLayout.putConstraint(SpringLayout.WEST, germanBox, 5, SpringLayout.EAST, pianoBox);
 
         JLabel label = new JLabel("Select a teacher:");
         calendarPanel.add(label);
@@ -174,16 +159,16 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         springLayout.putConstraint(SpringLayout.EAST, calendar, 0, SpringLayout.EAST, calendarPanel);
         springLayout.putConstraint(SpringLayout.NORTH, calendar, 0, SpringLayout.NORTH, calendarPanel);
         springLayout.putConstraint(SpringLayout.WEST, calendar, 0, SpringLayout.WEST, calendarPanel);
-        springLayout.putConstraint(SpringLayout.SOUTH, calendar, -35, SpringLayout.NORTH, personalBox);
+        springLayout.putConstraint(SpringLayout.SOUTH, calendar, -35, SpringLayout.NORTH, undergraduateBox);
 
         springLayout.putConstraint(SpringLayout.WEST, teachers, 5, SpringLayout.EAST, label);
-        springLayout.putConstraint(SpringLayout.SOUTH, teachers, -5, SpringLayout.NORTH, personalBox);
+        springLayout.putConstraint(SpringLayout.SOUTH, teachers, -5, SpringLayout.NORTH, undergraduateBox);
 
         springLayout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, calendarPanel);
-        springLayout.putConstraint(SpringLayout.SOUTH, label, -5, SpringLayout.NORTH, personalBox);
+        springLayout.putConstraint(SpringLayout.SOUTH, label, -5, SpringLayout.NORTH, undergraduateBox);
 
-        springLayout.putConstraint(SpringLayout.SOUTH, personalBox, -5, SpringLayout.SOUTH, calendarPanel);
-        springLayout.putConstraint(SpringLayout.WEST, personalBox, 5, SpringLayout.WEST, calendarPanel);
+        springLayout.putConstraint(SpringLayout.SOUTH, undergraduateBox, -5, SpringLayout.SOUTH, calendarPanel);
+        springLayout.putConstraint(SpringLayout.WEST, undergraduateBox, 5, SpringLayout.WEST, calendarPanel);
 
         calendar.setEnableDragCreate(true);
         calendar.addCalendarListener(new CalendarAdapter() {
@@ -302,7 +287,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
         Object source = e.getItemSelectable();
 
-        if (source == personalBox) {
+        if (source == undergraduateBox) {
 
             for (Contact c : contactsList) {
                 if (c.getId().startsWith("guitar")) {
@@ -316,7 +301,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
                     }
                 }
             }
-        } else if (source == pianoBox) {
+        } else if (source == phdBox) {
             for (Contact c : contactsList) {
                 if (c.getId().startsWith("piano")) {
 
@@ -329,21 +314,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
                     }
                 }
             }
-        } else if (source == germanBox) {
-            for (Contact c : contactsList) {
-                if (c.getId().startsWith("german")) {
-
-                    if (addItems) {
-                        calendar.getContacts().add(c);
-                        teachers.add(c.getName());
-                    } else {
-                        calendar.getContacts().remove(c);
-                        teachers.remove(c.getName());
-                    }
-
-                }
-            }
-        } else if (source == frenchBox) {
+        } else if (source == graduateBox) {
             for (Contact c : contactsList) {
                 if (c.getId().startsWith("french")) {
 

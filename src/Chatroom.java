@@ -106,7 +106,8 @@ public class Chatroom extends JFrame implements ActionListener {
 
             txtMessage.setText("");
             txtMessage.requestFocus();
-            txtHistory.append("   "+sender.getUsername()+" @"+dtf.format(LocalDateTime.now())+": "+currentMessage+"\n");
+            txtHistory.append("   "+sender.getFirstname()+" "+sender.getLastname()+" @"
+                    +dtf.format(LocalDateTime.now())+": "+currentMessage+"\n");
         }
     }
 
