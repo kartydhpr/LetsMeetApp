@@ -1,7 +1,9 @@
 /*
 This is the Gui class
 */
-
+import java.net.*;
+import java.util.*;
+import java.io.*;
 import java.awt.*;
 import java.awt.Color;
 import javax.swing.*;
@@ -9,7 +11,6 @@ import javax.swing.border.LineBorder;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 import java.util.Timer;
 import com.mindfusion.common.DateTime;
 import com.mindfusion.common.Duration;
@@ -19,30 +20,35 @@ import com.mindfusion.scheduling.model.*;
 import com.mindfusion.scheduling.model.ItemEvent;
 import java.awt.event.ItemListener;
 
-public class GUI extends JFrame implements ActionListener, KeyListener, MouseListener {
-
-    Person sender;
-    Person receiver;
-    Message m = new Message();
-    String currentMessage;
-
+public class GUI extends JFrame implements ActionListener, KeyListener, MouseListener, Internationalizer {
     API api = new API();
+    Chatroom chat = new Chatroom();
+    Message m = new Message();
+    Time timeClass = new Time();
+    Contacts contactClass = new Contacts();
+
+    JFrame frame;
+    JPanel calendarPanel, chatroomPanel, mapPanel, zoomPanel, pnlContain;
+    JTabbedPane tabbedPane;
+    JLabel clockLbl, lblHistory, lblMessage, lblSelectPerson;
+    JCheckBox undergraduateBox, graduateBox, phdBox;
+    JTextArea txtHistory, txtMessage;
+    JComboBox comboReceiver, comboSender, comboLanguage;
+    JButton btnSendMessage;
+    Choice people;
+    AwtCalendar calendar;
+    ArrayList<Contact> contactsList;;
+
+    String[] pList1 = {"Select Sender", "Bob", "Karto", "Fred", "John", "Greg", "Eric"};
+    String[] pList2 = {"Select Receiver", "Bob", "Karto", "Fred", "John", "Greg", "Eric"};
+    String[] pList3 = {"Select Language", "English", "Spanish"};
+    String lang;
+    String cntry;
+
     Color bgColor = new Color(0, 40, 69);
     Color secondaryColor = new Color(255, 153, 115);
     Color panelColor = new Color(32, 61, 84);
     Color accentColor = new Color(0, 207, 204);
-    JFrame frame;
-    JPanel calendarPanel, chatroomPanel, mapPanel, zoomPanel;
-    JTabbedPane tabbedPane;
-    //    JButton ;
-//    JTextField ;
-    JLabel clockLbl;
-    JCheckBox undergraduateBox;
-    JCheckBox graduateBox;
-    JCheckBox phdBox;
-    Choice people;
-    AwtCalendar calendar;
-    ArrayList<Contact> contactsList;
 
     public GUI() {
         //General page specs
@@ -66,20 +72,15 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
             }
         }, 0, 1000);
 
-
         layout.putConstraint(SpringLayout.NORTH, clockLbl,50, SpringLayout.SOUTH, calendarPanel);
-
         contactsList = new ArrayList<Contact>();
-
         SpringLayout springLayout = new SpringLayout();
         calendarPanel.setLayout(springLayout);
-
         people = new Choice();
         calendarPanel.add(people);
 
         undergraduateBox = new JCheckBox("Undergraduate");
         undergraduateBox.setSelected(true);
-
         undergraduateBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -89,7 +90,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         calendarPanel.add(undergraduateBox);
 
         phdBox = new JCheckBox("PHD");
-
         phdBox.setSelected(true);
         phdBox.addItemListener(new ItemListener() {
             @Override
@@ -97,11 +97,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
                 checkBoxChanged(e);
             }
         });
-
         calendarPanel.add(phdBox);
 
         graduateBox = new JCheckBox("Graduate");
-
         graduateBox.setSelected(true);
         graduateBox.addItemListener(new ItemListener() {
             @Override
@@ -109,18 +107,16 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
                 checkBoxChanged(e);
             }
         });
-
         calendarPanel.add(graduateBox);
 
         springLayout.putConstraint(SpringLayout.SOUTH, graduateBox, -5, SpringLayout.SOUTH, calendarPanel);
         springLayout.putConstraint(SpringLayout.WEST, graduateBox, 5, SpringLayout.EAST, undergraduateBox);
-
         springLayout.putConstraint(SpringLayout.SOUTH, phdBox, -5, SpringLayout.SOUTH, calendarPanel);
         springLayout.putConstraint(SpringLayout.WEST, phdBox, 5, SpringLayout.EAST, graduateBox);
 
-
-        JLabel label = new JLabel("Select a teacher:");
-        calendarPanel.add(label);
+        lblSelectPerson = new JLabel("Select a person:");
+        lblSelectPerson.setForeground(secondaryColor);
+        calendarPanel.add(lblSelectPerson);
 
         calendar = new AwtCalendar();
         calendar.beginInit();
@@ -155,11 +151,11 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         springLayout.putConstraint(SpringLayout.WEST, calendar, 0, SpringLayout.WEST, calendarPanel);
         springLayout.putConstraint(SpringLayout.SOUTH, calendar, -35, SpringLayout.NORTH, undergraduateBox);
 
-        springLayout.putConstraint(SpringLayout.WEST, people, 5, SpringLayout.EAST, label);
+        springLayout.putConstraint(SpringLayout.WEST, people, 5, SpringLayout.EAST, lblSelectPerson);
         springLayout.putConstraint(SpringLayout.SOUTH, people, -5, SpringLayout.NORTH, undergraduateBox);
 
-        springLayout.putConstraint(SpringLayout.WEST, label, 5, SpringLayout.WEST, calendarPanel);
-        springLayout.putConstraint(SpringLayout.SOUTH, label, -5, SpringLayout.NORTH, undergraduateBox);
+        springLayout.putConstraint(SpringLayout.WEST, lblSelectPerson, 5, SpringLayout.WEST, calendarPanel);
+        springLayout.putConstraint(SpringLayout.SOUTH, lblSelectPerson, -5, SpringLayout.NORTH, undergraduateBox);
 
         springLayout.putConstraint(SpringLayout.SOUTH, undergraduateBox, -5, SpringLayout.SOUTH, calendarPanel);
         springLayout.putConstraint(SpringLayout.WEST, undergraduateBox, 5, SpringLayout.WEST, calendarPanel);
@@ -184,35 +180,25 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         calendarPanel.add(calendar);
         calendarPanel.setBackground(panelColor);
 
+
         // Chatroom panel specs
         chatroomPanel = new JPanel();
         chatroomPanel.setLayout(new BoxLayout(chatroomPanel, BoxLayout.Y_AXIS));
         chatroomPanel.setBackground(panelColor);
 
-        Person karty = new Person("Karty", "1", "10.186.173.143", 8189);
-        Person jack = new Person("Jack", "2", "10.186.173.143", 8180);
-
-        // Frame Variables
-        JPanel pnlContain;
-        JTextField txtPort;
-        JTextArea txtHistory, txtMessage;
-        JLabel lblHistory, lblMessage;
-        JComboBox comboReceiver;
-        JButton btnSendMessage;
-
         LineBorder lineBorder = new LineBorder(secondaryColor, 3, true);
         LineBorder lineBorderMessaActive = new LineBorder(Color.green, 3, true);
-
-        String[] receiverList = {"Pick Recipient", "Jack", "Karty"}; // combo box list population
-        String[] senderList = {"Pick Sender", "Jack", "Karty"}; // combo box list population
-
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
 
-        // Main frame
-        comboReceiver = new JComboBox(receiverList);
+        // Chat frame
+        comboSender = new JComboBox(pList1);
+        comboSender.addActionListener(this);
+        comboReceiver = new JComboBox(pList2);
         comboReceiver.addActionListener(this);
+        comboLanguage = new JComboBox(pList3);
+        comboLanguage.addActionListener(this);
 
-        lblHistory = new JLabel(" _______________ Chat History: _______________ ");
+        lblHistory = new JLabel(" _______________ Chat History _______________ ");
         lblHistory.setForeground(Color.white);
         txtHistory = new JTextArea(30, 30);
         txtHistory.setEditable(false);
@@ -235,13 +221,17 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         Container cp = getContentPane();
         pnlContain = new JPanel();
         pnlContain.setLayout(new BoxLayout(pnlContain, BoxLayout.Y_AXIS));
+        comboSender.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
         comboReceiver.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
+        comboLanguage.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
         lblHistory.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
         txtHistory.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
         lblMessage.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
         txtMessage.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
         btnSendMessage.setAlignmentX(pnlContain.CENTER_ALIGNMENT);
+        pnlContain.add(comboSender);
         pnlContain.add(comboReceiver);
+        pnlContain.add(comboLanguage);
         pnlContain.add(lblHistory);
         pnlContain.add(txtHistory);
         pnlContain.add(lblMessage);
@@ -251,7 +241,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         cp.add(pnlContain);
         chatroomPanel.add(cp);
         chatroomPanel.setSize(123, 123);
-
 
         // Map panel specs
         mapPanel = new JPanel();
@@ -281,18 +270,15 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
     // Message Scheduler methods
     private void checkBoxChanged (java.awt.event.ItemEvent e){
         boolean addItems = true;
-        //Now that we know which Box was pushed, find out
-        //whether it was selected or deselected.
         if (e.getStateChange() == java.awt.event.ItemEvent.DESELECTED) {
             addItems = false;
         }
 
         Object source = e.getItemSelectable();
-
         if (source == undergraduateBox) {
 
             for (Contact c : contactsList) {
-                if (c.getId().startsWith("guitar")) {
+                if (c.getId().startsWith("u")) {
 
                     if (addItems) {
                         calendar.getContacts().add(c);
@@ -305,7 +291,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
             }
         } else if (source == phdBox) {
             for (Contact c : contactsList) {
-                if (c.getId().startsWith("piano")) {
+                if (c.getId().startsWith("g")) {
 
                     if (addItems) {
                         calendar.getContacts().add(c);
@@ -318,7 +304,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
             }
         } else if (source == graduateBox) {
             for (Contact c : contactsList) {
-                if (c.getId().startsWith("french")) {
+                if (c.getId().startsWith("p")) {
 
                     if (addItems) {
                         calendar.getContacts().add(c);
@@ -334,73 +320,44 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
     }
 
     private void initializeContacts () {
-
         Contact contact = new Contact();
-        contact.setId("german_MW");
-        contact.setName("Michael Walmann");
+        contact.setId("u_1");
+        contact.setName("Bob Murphy");
         people.add(contact.getName());
         calendar.getContacts().add(contact);
         contactsList.add(contact);
 
         contact = new Contact();
-        contact.setId("german_LB");
-        contact.setName("Brigitte Koepf");
+        contact.setId("u_2");
+        contact.setName("Karto Smith");
         calendar.getContacts().add(contact);
         people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
-        contact.setId("piano_DR");
-        contact.setName("David Rohnson");
+        contact.setId("g_1");
+        contact.setName("Fred Melenchuck");
         calendar.getContacts().add(contact);
         people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
-        contact.setId("piano_EE");
-        contact.setName("Elisabeth Evans");
+        contact.setId("g_2");
+        contact.setName("John Mahedy");
         calendar.getContacts().add(contact);
         people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
-        contact.setId("guitar_RS");
-        contact.setName("Ricardo Smith");
+        contact.setId("p_1");
+        contact.setName("Greg O'Neil");
         calendar.getContacts().add(contact);
         people.add(contact.getName());
         contactsList.add(contact);
 
         contact = new Contact();
-        contact.setId("guitar_RW");
-        contact.setName("Robert Wilson");
-        calendar.getContacts().add(contact);
-        people.add(contact.getName());
-        contactsList.add(contact);
-
-        contact = new Contact();
-        contact.setId("french_FT");
-        contact.setName("Francois Toreau");
-        calendar.getContacts().add(contact);
-        people.add(contact.getName());
-        contactsList.add(contact);
-
-        contact = new Contact();
-        contact.setId("french_CR");
-        contact.setName("Chantale Saron");
-        calendar.getContacts().add(contact);
-        people.add(contact.getName());
-        contactsList.add(contact);
-
-        contact = new Contact();
-        contact.setId("piano_PD");
-        contact.setName("Peter Drysdale");
-        calendar.getContacts().add(contact);
-        people.add(contact.getName());
-        contactsList.add(contact);
-
-        contact = new Contact();
-        contact.setId("guitar_ER");
-        contact.setName("Emma Rodriguez");
+        contact.setId("p_2");
+        contact.setName("Eric Matson");
         calendar.getContacts().add(contact);
         people.add(contact.getName());
         contactsList.add(contact);
@@ -488,32 +445,154 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
     protected void onItemCreated (ItemEvent e){
         Appointment item = (Appointment) e.getItem();
-
-        String teacherName = people.getSelectedItem();
+        String personName = people.getSelectedItem();
         for (Contact c : calendar.getSchedule().getContacts()) {
-            if (c.getName().equals(teacherName)) {
+            if (c.getName().equals(personName)) {
                 item.getContacts().add(calendar.getContacts().get(c.getId()));
 
             }
         }
-        item.setHeaderText(teacherName);
-
+        item.setHeaderText(personName);
     }
 
-    protected void onCalendarItemCreating (ItemConfirmEvent e)
-    {
+    protected void onCalendarItemCreating (ItemConfirmEvent e) {
         DateTime start = e.getItem().getStartTime();
         DateTime end = e.getItem().getEndTime();
 
+//        if (start.getDayOfWeek() == 0 || end.getDayOfWeek() == 0) {
+//            JOptionPane.showMessageDialog(this, "No Classes on Sunday!");
+//            e.setConfirm(false);
+//        }
+    }
 
-        if (start.getDayOfWeek() == 0 || end.getDayOfWeek() == 0) {
-            JOptionPane.showMessageDialog(this, "No Classes on Sunday!");
-            e.setConfirm(false);
-        }
+    public void setLanguage(String language, String country){
+        Locale l = new Locale(language, country);
+        ResourceBundle r = ResourceBundle.getBundle("Bundle", l);
+
+        comboSender.setSelectedIndex(0);
+        comboSender.insertItemAt(r.getString("SELECT SENDER"), 0);
+        comboSender.setSelectedIndex(0);
+        comboSender.removeItemAt(1);
+
+        comboReceiver.setSelectedIndex(0);
+        comboReceiver.insertItemAt(r.getString("SELECT RECEIVER"), 0);
+        comboReceiver.setSelectedIndex(0);
+        comboReceiver.removeItemAt(1);
+
+        frame.setTitle(r.getString("LetsMeetApp"));
+        tabbedPane.setTitleAt(0, r.getString("Calendar"));
+        tabbedPane.setTitleAt(1, r.getString("Chat"));
+        tabbedPane.setTitleAt(2, r.getString("Map"));
+        tabbedPane.setTitleAt(3, r.getString("Zoom"));
+        lblSelectPerson.setText(r.getString("Select a person:"));
+        undergraduateBox.setText(r.getString("Undergraduate"));
+        graduateBox.setText(r.getString("Graduate"));
+        phdBox.setText(r.getString("PHD"));
+        lblHistory.setText(r.getString(" _______________ Chat History: _______________ "));
+        lblMessage.setText("Message:");
+        btnSendMessage.setText(r.getString("SEND"));
     }
 
     public void actionPerformed(ActionEvent evt){
+        //All send buttons
+        if(evt.getSource() == btnSendMessage){
+            m.setMessage(txtMessage.getText());
+            chat.sendMessage(chat.getReceiver(), m.getMessage());
+            txtMessage.setText("");
+            txtMessage.requestFocus();
+            txtHistory.append("   "+chat.getSender().getFirstname()+" "+chat.getSender().getLastname()+" @"
+                    +timeClass.getTime()+": "+m.getMessage()+"\n");
+        }
 
+        //Sender Combobox
+        if(evt.getSource() == comboSender){
+            JComboBox cb = (JComboBox)evt.getSource();
+            String contacts2 = (String)cb.getSelectedItem();
+
+            if(contacts2.equals("Bob")){
+                chat.setSender(contactClass.u1);
+                comboSender.setSelectedIndex(1);
+            }
+
+            if(contacts2.equals("Karto")){
+                chat.setSender(contactClass.u2);
+                comboSender.setSelectedIndex(2);
+            }
+
+            if(contacts2.equals("Fred")){
+                chat.setSender(contactClass.g1);
+                comboSender.setSelectedIndex(3);
+            }
+
+            if(contacts2.equals("John")){
+                chat.setSender(contactClass.g2);
+                comboSender.setSelectedIndex(4);
+            }
+
+            if(contacts2.equals("Greg")){
+                chat.setSender(contactClass.p1);
+                comboSender.setSelectedIndex(5);
+            }
+
+            if(contacts2.equals("Eric")){
+                chat.setSender(contactClass.p2);
+                comboSender.setSelectedIndex(6);
+            }
+        }
+
+        //Receiver ComboBox
+        if(evt.getSource() == comboReceiver){
+            JComboBox cb = (JComboBox)evt.getSource();
+            String contacts2 = (String)cb.getSelectedItem();
+
+            if(contacts2.equals("Bob")){
+                chat.setReceiver(contactClass.u1);
+                comboReceiver.setSelectedIndex(1);
+            }
+
+            if(contacts2.equals("Karto")){
+                chat.setReceiver(contactClass.u2);
+                comboReceiver.setSelectedIndex(2);
+            }
+
+            if(contacts2.equals("Fred")){
+                chat.setReceiver(contactClass.g1);
+                comboReceiver.setSelectedIndex(3);
+            }
+
+            if(contacts2.equals("John")){
+                chat.setReceiver(contactClass.g2);
+                comboReceiver.setSelectedIndex(4);
+            }
+
+            if(contacts2.equals("Greg")){
+                chat.setReceiver(contactClass.p1);
+                comboReceiver.setSelectedIndex(5);
+            }
+
+            if(contacts2.equals("Eric")){
+                chat.setReceiver(contactClass.p2);
+                comboReceiver.setSelectedIndex(6);
+            }
+        }
+
+        //Set languages
+        if(evt.getSource() == comboLanguage){
+            JComboBox cb = (JComboBox)evt.getSource();
+            String contact9 = (String)cb.getSelectedItem();
+
+            if(contact9.equals("English")){
+                lang = "en";
+                cntry = "US";
+                setLanguage(lang, cntry);
+            }
+
+            if(contact9.equals("Spanish")){
+                lang = "es";
+                cntry = "MX";
+                setLanguage(lang, cntry);
+            }
+        }
     }
     
     //Key listeners
@@ -549,10 +628,52 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
     public void mouseClicked(MouseEvent e) {
        
     }
-     
+
+    public void receiveMessage(int port){                //server
+        System.out.println("Server Starting...");
+        String lineIn;
+
+        try{
+            ServerSocket s = new ServerSocket(port);
+            boolean over = false;
+
+            while(!over){
+                Socket incoming = s.accept();
+
+                try{
+                    InputStream inStream = incoming.getInputStream();
+                    Scanner in = new Scanner(inStream);
+
+                    boolean done = false;
+                    while (!done && in.hasNextLine()){
+                        lineIn = in.nextLine();
+
+                        if (lineIn.trim().equals("END")){
+                            done = true;
+                        }
+
+                        else{
+                            m.setMessage(lineIn);
+                            txtHistory.append("   "+chat.getReceiver().getFirstname()+" "+chat.getReceiver().getLastname()+" @"
+                                    +timeClass.getTime()+": "+m.getMessage()+"\n");
+                        }
+                    }
+                }
+
+                catch(Exception exc1){
+                    exc1.printStackTrace();
+                }
+            }
+        }
+
+        catch(Exception exc2){
+            exc2.printStackTrace();
+        }
+    }
+
     //Main method
     public static void main(String [] args){
         GUI g = new GUI();
-        //g.receiveMessage(8189);
+        g.receiveMessage(8189);
     }
 }
