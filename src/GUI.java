@@ -20,7 +20,7 @@ import com.mindfusion.scheduling.model.*;
 import com.mindfusion.scheduling.model.ItemEvent;
 import java.awt.event.ItemListener;
 
-public class GUI extends JFrame implements ActionListener, KeyListener, MouseListener, Internationalizer {
+public class GUI extends JFrame implements ActionListener, MouseListener, Internationalizer {
     API api = new API();
     Chatroom chat = new Chatroom();
     Message m = new Message();
@@ -41,7 +41,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
     String[] pList1 = {"Select Sender", "Bob", "Karto", "Fred", "John", "Greg", "Eric"};
     String[] pList2 = {"Select Receiver", "Bob", "Karto", "Fred", "John", "Greg", "Eric"};
-    String[] pList3 = {"Select Language", "English", "Spanish"};
+    String[] pList3 = {"Select Language", "English", "Spanish", "Chinese"};
     String lang;
     String cntry;
 
@@ -49,6 +49,10 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
     Color secondaryColor = new Color(255, 153, 115);
     Color panelColor = new Color(32, 61, 84);
     Color accentColor = new Color(0, 207, 204);
+    LineBorder lineBorder = new LineBorder(secondaryColor);
+    LineBorder lineBorderMessaActive = new LineBorder(Color.green , 3, true);
+
+
 
     public GUI() {
         //General page specs
@@ -80,6 +84,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         calendarPanel.add(people);
 
         undergraduateBox = new JCheckBox("Undergraduate");
+        undergraduateBox.setForeground(Color.white);
         undergraduateBox.setSelected(true);
         undergraduateBox.addItemListener(new ItemListener() {
             @Override
@@ -90,6 +95,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         calendarPanel.add(undergraduateBox);
 
         phdBox = new JCheckBox("PHD");
+        phdBox.setForeground(Color.white);
         phdBox.setSelected(true);
         phdBox.addItemListener(new ItemListener() {
             @Override
@@ -100,6 +106,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         calendarPanel.add(phdBox);
 
         graduateBox = new JCheckBox("Graduate");
+        graduateBox.setForeground(Color.white);
         graduateBox.setSelected(true);
         graduateBox.addItemListener(new ItemListener() {
             @Override
@@ -125,13 +132,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         calendar.setCustomDraw(CustomDrawElements.TimetableItem);
         calendar.setGroupType(GroupType.FilterByContacts);
 
-//        calendar.getTimetableSettings().getCellStyle().setBorderBottomColor(new Color(169, 169, 169));
         calendar.getTimetableSettings().getCellStyle().setBorderBottomWidth(1);
-//        calendar.getTimetableSettings().getCellStyle().setBorderLeftColor(new Color(169, 169, 169));
         calendar.getTimetableSettings().getCellStyle().setBorderLeftWidth(1);
-//        calendar.getTimetableSettings().getCellStyle().setBorderRightColor(new Color(169, 169, 169));
         calendar.getTimetableSettings().getCellStyle().setBorderRightWidth(1);
-//        calendar.getTimetableSettings().getCellStyle().setBorderTopColor(new Color(169, 169, 169));
         calendar.getTimetableSettings().getCellStyle().setBorderTopWidth(1);
         calendar.getTimetableSettings().getCellStyle().setHeaderTextShadowOffset(0);
         calendar.getTimetableSettings().getCellStyle().setHeaderTextShadowStyle(ShadowStyle.None);
@@ -162,9 +165,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
         calendar.setEnableDragCreate(true);
         calendar.addCalendarListener(new CalendarAdapter() {
-//            public void draw (DrawEvent e){
-//                onCalendarDraw(e);
-//            }
 
             public void itemCreated (ItemEvent e){
                 onItemCreated(e);
@@ -206,6 +206,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         txtHistory.setBackground(Color.black);
         txtHistory.setForeground(Color.green);
         txtHistory.setBorder(lineBorder);
+        txtHistory.addMouseListener(this);
+
 
         lblMessage = new JLabel("Message:");
         lblMessage.setForeground(Color.white);
@@ -214,6 +216,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         txtMessage.setBackground(Color.black);
         txtMessage.setForeground(Color.white);
         txtMessage.setBorder(lineBorder);
+        txtMessage.addMouseListener(this);
+
 
         btnSendMessage = new JButton("Send");
         btnSendMessage.addActionListener(this);
@@ -244,7 +248,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
 
         // Map panel specs
         mapPanel = new JPanel();
-        mapPanel.add(api.startApi("maps.google.com"), BorderLayout.CENTER);
+//        mapPanel.add(api.startApi("maps.google.com"), BorderLayout.CENTER);
+        mapPanel.add(api.startApi(System.getProperty("user.dir") + "/src/map.html"), BorderLayout.CENTER);
 
         // Zoom panel specs
         zoomPanel = new JPanel();
@@ -363,86 +368,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
         contactsList.add(contact);
     }
 
-
-//    protected void onCalendarDraw (DrawEvent e){
-//        if (e.getElement() == CustomDrawElements.TimetableItem) {
-//
-//            Appointment app = (Appointment) e.getItem();
-//
-//            if (app.getContacts().size() == 0)
-//                return;
-//            if (app.getContacts().get(0).getId().startsWith("guitar")) {
-//
-//                java.awt.Image img = null;
-//
-//                try {
-//                    // Read the image file from an input stream
-//                    InputStream is = new BufferedInputStream(
-//                            new FileInputStream("../guitar.png"));
-//                    img = ImageIO.read(is);
-//
-//                    com.mindfusion.common.Rectangle r = e.getBounds();
-//                    AwtImage awtImage = new AwtImage(img);
-//                    //draw the image
-//                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
-//
-//                } catch (IOException ioe) {
-//                }
-//            } else if (app.getContacts().get(0).getId().startsWith("piano")) {
-//
-//                java.awt.Image img = null;
-//
-//                try {
-//                    // Read the image file from an input stream
-//                    InputStream is = new BufferedInputStream(
-//                            new FileInputStream("../piano.png"));
-//                    img = ImageIO.read(is);
-//
-//                    com.mindfusion.common.Rectangle r = e.getBounds();
-//                    AwtImage awtImage = new AwtImage(img);
-//                    //draw the image
-//                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
-//
-//                } catch (IOException ioe) {
-//                }
-//            } else if (app.getContacts().get(0).getId().startsWith("german")) {
-//
-//                java.awt.Image img = null;
-//
-//                try {
-//                    // Read the image file from an input stream
-//                    InputStream is = new BufferedInputStream(
-//                            new FileInputStream("../german.png"));
-//                    img = ImageIO.read(is);
-//
-//                    com.mindfusion.common.Rectangle r = e.getBounds();
-//                    AwtImage awtImage = new AwtImage(img);
-//                    //draw the
-//                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
-//
-//                } catch (IOException ioe) {
-//                }
-//            } else if (app.getContacts().get(0).getId().startsWith("french")) {
-//
-//                java.awt.Image img = null;
-//
-//                try {
-//                    // Read the image file from an input stream
-//                    InputStream is = new BufferedInputStream(
-//                            new FileInputStream("../french.png"));
-//                    img = ImageIO.read(is);
-//
-//                    com.mindfusion.common.Rectangle r = e.getBounds();
-//                    AwtImage awtImage = new AwtImage(img);
-//                    //draw the image
-//                    e.getGraphics().drawImage(awtImage, e.getBounds().getLeft(), e.getBounds().getTop() + 20);
-//
-//                } catch (IOException ioe) {
-//                }
-//            }
-//        }
-//    }
-
     protected void onItemCreated (ItemEvent e){
         Appointment item = (Appointment) e.getItem();
         String personName = people.getSelectedItem();
@@ -458,38 +383,35 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
     protected void onCalendarItemCreating (ItemConfirmEvent e) {
         DateTime start = e.getItem().getStartTime();
         DateTime end = e.getItem().getEndTime();
-
-//        if (start.getDayOfWeek() == 0 || end.getDayOfWeek() == 0) {
-//            JOptionPane.showMessageDialog(this, "No Classes on Sunday!");
-//            e.setConfirm(false);
-//        }
     }
 
     public void setLanguage(String language, String country){
         Locale l = new Locale(language, country);
-        ResourceBundle r = ResourceBundle.getBundle("Bundle", l);
+        ResourceBundle r = ResourceBundle.getBundle("bundle", l);
 
         comboSender.setSelectedIndex(0);
-        comboSender.insertItemAt(r.getString("SELECT SENDER"), 0);
+        comboSender.insertItemAt(r.getString("PICK SENDER"), 0);
         comboSender.setSelectedIndex(0);
         comboSender.removeItemAt(1);
 
         comboReceiver.setSelectedIndex(0);
-        comboReceiver.insertItemAt(r.getString("SELECT RECEIVER"), 0);
+        comboReceiver.insertItemAt(r.getString("PICK RECEIVER"), 0);
         comboReceiver.setSelectedIndex(0);
         comboReceiver.removeItemAt(1);
 
-        frame.setTitle(r.getString("LetsMeetApp"));
-        tabbedPane.setTitleAt(0, r.getString("Calendar"));
-        tabbedPane.setTitleAt(1, r.getString("Chat"));
-        tabbedPane.setTitleAt(2, r.getString("Map"));
-        tabbedPane.setTitleAt(3, r.getString("Zoom"));
-        lblSelectPerson.setText(r.getString("Select a person:"));
-        undergraduateBox.setText(r.getString("Undergraduate"));
-        graduateBox.setText(r.getString("Graduate"));
-        phdBox.setText(r.getString("PHD"));
-        lblHistory.setText(r.getString(" _______________ Chat History: _______________ "));
-        lblMessage.setText("Message:");
+        comboLanguage.setSelectedIndex(0);
+        comboLanguage.insertItemAt(r.getString("PICK LANGUAGE"), 0);
+        comboLanguage.setSelectedIndex(0);
+        comboLanguage.removeItemAt(1);
+
+        tabbedPane.setTitleAt(0, r.getString("CALENDAR"));
+        tabbedPane.setTitleAt(1, r.getString("CHAT"));
+        tabbedPane.setTitleAt(2, r.getString("MAP"));
+        lblSelectPerson.setText(r.getString("SELECT PERSON"));
+        undergraduateBox.setText(r.getString("UNDERGRADUATE"));
+        graduateBox.setText(r.getString("GRADUATE"));
+        lblHistory.setText(r.getString("CHAT HISTORY"));
+        lblMessage.setText(r.getString("MESSAGE LABEL"));
         btnSendMessage.setText(r.getString("SEND"));
     }
 
@@ -592,41 +514,34 @@ public class GUI extends JFrame implements ActionListener, KeyListener, MouseLis
                 cntry = "MX";
                 setLanguage(lang, cntry);
             }
+
+            if(contact9.equals("Chinese")){
+                lang= "cn";
+                cntry= "CN";
+                setLanguage(lang, cntry);
+            }
         }
     }
-    
-    //Key listeners
-    public void keyPressed(KeyEvent e){
 
-    }
-    
-    public void keyTyped(KeyEvent e){
- 
-    }
-    
-    public void keyReleased(KeyEvent e){
-
-    }
-    
     //Mouse Listeners
-    public void mousePressed(MouseEvent e) {
-       
-    }
-
-    public void mouseReleased(MouseEvent e) {
-       
-    }
+    public void mouseClicked(MouseEvent e) {} public void mousePressed(MouseEvent e){}public void mouseReleased(MouseEvent e) {} //irellevant abstract methods
 
     public void mouseEntered(MouseEvent e) {
-
+        if(e.getSource() == btnSendMessage){
+            txtMessage.requestFocus();
+        }
+        if(e.getSource()==txtMessage){
+            txtMessage.setBorder(lineBorderMessaActive);
+        }
     }
 
     public void mouseExited(MouseEvent e) {
-
-    }
-
-    public void mouseClicked(MouseEvent e) {
-       
+        if(e.getSource() == btnSendMessage){
+            pnlContain.requestFocus();
+        }
+        if(e.getSource()==txtMessage){
+            txtMessage.setBorder(lineBorder);
+        }
     }
 
     public void receiveMessage(int port){                //server
