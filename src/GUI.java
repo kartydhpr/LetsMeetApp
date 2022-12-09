@@ -50,7 +50,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, Intern
     Color panelColor = new Color(32, 61, 84);
     Color accentColor = new Color(0, 207, 204);
     LineBorder lineBorder = new LineBorder(secondaryColor);
-    LineBorder lineBorderMessaActive = new LineBorder(Color.green , 3, true);
+    LineBorder lineBorderMessaActive = new LineBorder(accentColor , 3, true);
 
 
 
@@ -84,7 +84,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, Intern
         calendarPanel.add(people);
 
         undergraduateBox = new JCheckBox("Undergraduate");
-        undergraduateBox.setForeground(Color.white);
+        undergraduateBox.setForeground(accentColor);
         undergraduateBox.setSelected(true);
         undergraduateBox.addItemListener(new ItemListener() {
             @Override
@@ -95,7 +95,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, Intern
         calendarPanel.add(undergraduateBox);
 
         phdBox = new JCheckBox("PHD");
-        phdBox.setForeground(Color.white);
+        phdBox.setForeground(accentColor);
         phdBox.setSelected(true);
         phdBox.addItemListener(new ItemListener() {
             @Override
@@ -106,7 +106,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, Intern
         calendarPanel.add(phdBox);
 
         graduateBox = new JCheckBox("Graduate");
-        graduateBox.setForeground(Color.white);
+        graduateBox.setForeground(accentColor);
         graduateBox.setSelected(true);
         graduateBox.addItemListener(new ItemListener() {
             @Override
